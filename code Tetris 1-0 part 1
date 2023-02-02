@@ -1,0 +1,119 @@
+Borland C++ Builder 6 - how to build Tetris
+                               Part 1
+-------------------------------------------------------------
+Objects:  Timer1 (  Interval = 50  )  ,
+BitBtn1  ,  BitBtn2
+-------------------------------------------------------------
+
+                   TForm1 *Form1
+
+  const int BLOCK_SIZE = 20;
+  const int BLOCK_COUNT = 4;
+
+  TImage *Blocks[BLOCK_COUNT][4];
+
+  int BlockSpeed = 5;
+
+  int CurrentBlockShape = 0;
+
+const int BLOCK_SHAPE_SIZE = 4;
+int BlockShapes[BLOCK_COUNT][BLOCK_SHAPE_SIZE][BLOCK_SHAPE_SIZE] = {
+  {
+    {0, 0, 0, 0},
+    {0, 1, 1, 0},
+    {0, 1, 1, 0},
+    {0, 0, 0, 0}
+  },
+  {
+    {0, 0, 0, 0},
+    {0, 1, 0, 0},
+    {0, 1, 1, 1},
+    {0, 0, 0, 0}
+  },
+  {
+    {1, 0, 0, 0},
+    {0, 1, 0, 0},
+    {0, 0, 1, 0},
+    {0, 0, 0, 1}
+  },
+  // Add more block shapes here
+  };
+
+---------------------------------------------
+---------------------------------------------
+                 FormCreate 
+
+// Create the blocks
+  for (int i = 0; i < BLOCK_COUNT; i++) {
+    for (int j = 0; j < 4; j++) {
+    Blocks[i][j] = new TImage(Form1);
+    Blocks[i][j]->Parent = Form1;
+    Blocks[i][j]->Left = i * BLOCK_SIZE;
+    Blocks[i][j]->Top = j * BLOCK_SIZE;
+    Blocks[i][j]->Width = BLOCK_SIZE;
+    Blocks[i][j]->Height = BLOCK_SIZE;
+
+    Blocks[i][j]->Canvas->Pen->Color = clBlack;
+    Blocks[i][j]->Canvas->Pen->Width = 1;
+    Blocks[i][j]->Canvas->Pen->Style = psSolid;
+    Blocks[i][j]->Canvas->Brush->Color = clBlue ;  
+    Blocks[i][j]->Canvas->Rectangle(0, 0, 20, 20);
+    Blocks[i][j]->Visible = false;
+    }
+  }
+
+----------------------------------------------
+                   BitBtn1Click
+
+  if( Timer1->Enabled == false )
+   {
+      int CurrentBlockShape = 1;
+
+    for (int i = 0; i < 4 ; i++) {
+     for (int j = 0; j < 4 ; j++) {
+
+         if( BlockShapes[CurrentBlockShape][i][j] == 1 )
+         {
+           Blocks[i][j]->Visible = true;
+         }
+        else
+         { Blocks[i][j]->Visible = false;    }
+     }}
+
+      Timer1->Enabled = true;
+      BitBtn1->Caption = "Stop";
+   }
+  else
+   {
+      Timer1->Enabled = false;
+      BitBtn1->Caption = "Start";
+   }
+
+--------------------------------------------------
+                   Timer1Timer
+
+     for (int i = 0; i < 4 ; i++) {
+       for (int j = 0; j < 4 ; j++) {
+
+           Blocks[i][j]->Top = Blocks[i][j]->Top + BlockSpeed;
+       }}
+
+ -------------------------------------------------
+                    BitBtn2Click      
+
+  for (int i = 0; i < 4 ; i++) {
+   for (int j = 0; j < 4 ; j++) {
+
+       if( BlockShapes[CurrentBlockShape][i][j] == 1 )
+       {
+         Blocks[i][j]->Visible = true;
+       }
+      else
+       { Blocks[i][j]->Visible = false;    }
+   }}
+
+       CurrentBlockShape = CurrentBlockShape + 1;
+
+ -------------------------------------------------
+ 
+ 
